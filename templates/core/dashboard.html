@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Resume Matcher{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Welcome, {{ user.username }}!</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">My Resumes</h5>
+                <p class="card-text">Upload and manage your resumes</p>
+                <a href="{% url 'resume_list' %}" class="btn btn-primary">View Resumes</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Job Matches</h5>
+                <p class="card-text">View your job matches</p>
+                <a href="{% url 'match_list' %}" class="btn btn-primary">View Matches</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Profile</h5>
+                <p class="card-text">Update your profile information</p>
+                <a href="{% url 'profile' %}" class="btn btn-primary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

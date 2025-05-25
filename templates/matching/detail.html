@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Match Details - Resume Matcher{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>{{ match.job.title }}</h3>
+                    <h5 class="text-muted">{{ match.job.company }}</h5>
+                </div>
+                <div class="card-body">
+                    <h5>Job Description</h5>
+                    <p>{{ match.job.description }}</p>
+                    
+                    <h5>Requirements</h5>
+                    <p>{{ match.job.requirements }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Job Details</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Location:</strong> {{ match.job.location }}</li>
+                                <li><strong>Job Type:</strong> {{ match.job.get_job_type_display }}</li>
+                                <li><strong>Salary Range:</strong> {{ match.job.salary_range }}</li>
+                                <li><strong>Posted:</strong> {{ match.job.posted_at|date:"F j, Y" }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Match Scores</h5>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: {{ match.match_score }}%"
+                                     aria-valuenow="{{ match.match_score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    Overall: {{ match.match_score }}%
+                                </div>
+                            </div>
+                            
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                     style="width: {{ match.skills_match_score }}%"
+                                     aria-valuenow="{{ match.skills_match_score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    Skills: {{ match.skills_match_score }}%
+                                </div>
+                            </div>
+                            
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: {{ match.experience_match_score }}%"
+                                     aria-valuenow="{{ match.experience_match_score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    Experience: {{ match.experience_match_score }}%
+                                </div>
+                            </div>
+                            
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: {{ match.education_match_score }}%"
+                                     aria-valuenow="{{ match.education_match_score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    Education: {{ match.education_match_score }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Matching Details</h5>
+                </div>
+                <div class="card-body">
+                    {% if match.matching_skills %}
+                        <h6>Matching Skills</h6>
+                        <p>{{ match.matching_skills }}</p>
+                    {% endif %}
+                    
+                    {% if match.matching_experience %}
+                        <h6>Matching Experience</h6>
+                        <p>{{ match.matching_experience }}</p>
+                    {% endif %}
+                    
+                    {% if match.matching_education %}
+                        <h6>Matching Education</h6>
+                        <p>{{ match.matching_education }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <a href="{% url 'resume_detail' match.resume.id %}" class="btn btn-primary w-100 mb-2">View Resume</a>
+                    <a href="{% url 'match_list' %}" class="btn btn-secondary w-100">Back to Matches</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

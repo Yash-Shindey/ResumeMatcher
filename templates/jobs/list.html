@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Jobs - Resume Matcher{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Available Jobs</h2>
+            {% if user.userprofile.is_admin %}
+                <a href="{% url 'create_job' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Job
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if jobs %}
+        {% for job in jobs %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ job.title }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ job.company }}</h6>
+                        <p class="card-text">
+                            <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
+                            <i class="fas fa-briefcase"></i> {{ job.get_job_type_display }}<br>
+                            {% if job.salary_range %}
+                                <i class="fas fa-money-bill-wave"></i> {{ job.salary_range }}<br>
+                            {% endif %}
+                            {% if job.work_mode %}
+                                <i class="fas fa-laptop-house"></i> Work Mode: {{ job.get_work_mode_display }}<br>
+                            {% endif %}
+                            {% if job.industry %}
+                                <i class="fas fa-industry"></i> Industry: {{ job.industry }}<br>
+                            {% endif %}
+                            {% if job.company_size %}
+                                <i class="fas fa-users"></i> Company Size: {{ job.company_size }}<br>
+                            {% endif %}
+                            {% if job.job_summary %}
+                                <strong>Summary:</strong> {{ job.job_summary|truncatewords:20 }}<br>
+                            {% endif %}
+                            {% if job.job_highlights %}
+                                <strong>Highlights:</strong> {{ job.job_highlights|truncatewords:10 }}<br>
+                            {% endif %}
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'job_detail' job.pk %}" class="btn btn-info">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            {% if user.userprofile.is_admin %}
+                                <div>
+                                    <a href="{% url 'edit_job' job.pk %}" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'delete_job' job.pk %}" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                No jobs available at the moment.
+                {% if user.userprofile.is_admin %}
+                    <a href="{% url 'create_job' %}" class="alert-link">Add a job</a>.
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

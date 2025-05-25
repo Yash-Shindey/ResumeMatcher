@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - Resume Matcher{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>{{ job.title }}</h2>
+            {% if user.userprofile.is_admin %}
+                <div>
+                    <a href="{% url 'edit_job' job.pk %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'delete_job' job.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Job Details</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">{{ job.company }}</h6>
+                <p>
+                    <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
+                    <i class="fas fa-briefcase"></i> {{ job.get_job_type_display }}<br>
+                    {% if job.salary_range %}
+                        <i class="fas fa-money-bill-wave"></i> {{ job.salary_range }}<br>
+                    {% endif %}
+                    {% if job.application_deadline %}
+                        <i class="fas fa-calendar-alt"></i> Apply by: {{ job.application_deadline|date:"F j, Y" }}<br>
+                    {% endif %}
+                    {% if job.work_mode %}
+                        <i class="fas fa-laptop-house"></i> Work Mode: {{ job.get_work_mode_display }}<br>
+                    {% endif %}
+                    {% if job.notice_period %}
+                        <i class="fas fa-clock"></i> Notice Period: {{ job.notice_period }}<br>
+                    {% endif %}
+                    {% if job.industry %}
+                        <i class="fas fa-industry"></i> Industry: {{ job.industry }}<br>
+                    {% endif %}
+                    {% if job.company_size %}
+                        <i class="fas fa-users"></i> Company Size: {{ job.company_size }}<br>
+                    {% endif %}
+                    {% if job.founders %}
+                        <i class="fas fa-user-tie"></i> Founders: {{ job.founders }}<br>
+                    {% endif %}
+                    {% if job.company_website %}
+                        <i class="fas fa-globe"></i> <a href="{{ job.company_website }}" target="_blank">Company Website</a><br>
+                    {% endif %}
+                    {% if job.linkedin_url %}
+                        <i class="fab fa-linkedin"></i> <a href="{{ job.linkedin_url }}" target="_blank">LinkedIn</a><br>
+                    {% endif %}
+                    {% if job.indeed_url %}
+                        <i class="fab fa-indeed"></i> <a href="{{ job.indeed_url }}" target="_blank">Indeed</a><br>
+                    {% endif %}
+                    {% if job.glassdoor_url %}
+                        <i class="fab fa-glassdoor"></i> <a href="{{ job.glassdoor_url }}" target="_blank">Glassdoor</a><br>
+                    {% endif %}
+                </p>
+                <hr>
+                {% if job.job_summary %}
+                <h6>Summary</h6>
+                <p>{{ job.job_summary|linebreaks }}</p>
+                <hr>
+                {% endif %}
+                <h6>Description</h6>
+                <p>{{ job.description|linebreaks }}</p>
+                <hr>
+                <h6>Requirements</h6>
+                <p>{{ job.requirements|linebreaks }}</p>
+                {% if job.benefits %}
+                <hr>
+                <h6>Benefits</h6>
+                <p>{{ job.benefits|linebreaks }}</p>
+                {% endif %}
+                {% if job.job_highlights %}
+                <hr>
+                <h6>Highlights</h6>
+                <p>{{ job.job_highlights|linebreaks }}</p>
+                {% endif %}
+                {% if job.company_description %}
+                <hr>
+                <h6>About the Company</h6>
+                <p>{{ job.company_description|linebreaks }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Required Skills</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ job.required_skills|linebreaks }}</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Required Experience</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ job.required_experience|linebreaks }}</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Required Education</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ job.required_education|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if matches %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Matching Resumes</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Skills Match</th>
+                                <th>Experience Match</th>
+                                <th>Education Match</th>
+                                <th>Overall Match</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for match in matches %}
+                                <tr>
+                                    <td>{{ match.resume.user.username }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ match.skills_match_score }}%">
+                                                {{ match.skills_match_score }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ match.experience_match_score }}%">
+                                                {{ match.experience_match_score }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ match.education_match_score }}%">
+                                                {{ match.education_match_score }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ match.match_score }}%">
+                                                {{ match.match_score }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'resume_detail' match.resume.pk %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> View Resume
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

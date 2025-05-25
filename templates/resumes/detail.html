@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Details - Resume Matcher{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Resume Details</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Resume Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>File:</strong> {{ resume.file.name }}</p>
+                <p><strong>Uploaded:</strong> {{ resume.uploaded_at|date:"F j, Y" }}</p>
+                <p><strong>Skills:</strong> {{ resume.skills }}</p>
+                <p><strong>Experience:</strong> {{ resume.experience }}</p>
+                <p><strong>Education:</strong> {{ resume.education }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">Match Scores</div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <strong>Skills Match:</strong>
+                    <div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ matches.0.skills_match_score|floatformat:1 }}%">
+                            {{ matches.0.skills_match_score|floatformat:1 }}%
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <strong>Experience Match:</strong>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ matches.0.experience_match_score|floatformat:1 }}%">
+                            {{ matches.0.experience_match_score|floatformat:1 }}%
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <strong>Education Match:</strong>
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ matches.0.education_match_score|floatformat:1 }}%">
+                            {{ matches.0.education_match_score|floatformat:1 }}%
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <strong>Overall Match:</strong>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ matches.0.match_score|floatformat:1 }}%">
+                            {{ matches.0.match_score|floatformat:1 }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Job Matches</h5>
+            </div>
+            <div class="card-body">
+                {% if matches %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Match Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for match in matches %}
+                                    <tr>
+                                        <td>{{ match.job.title }}</td>
+                                        <td>{{ match.job.company }}</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: {{ match.match_score }}%">
+                                                    {{ match.match_score }}%
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'job_detail' match.job.pk %}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> View Job
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        No job matches found. 
+                        <a href="{% url 'generate_matches' resume.pk %}" class="alert-link">Generate matches</a>.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

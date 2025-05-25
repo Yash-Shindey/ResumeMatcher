@@ -1,0 +1,12 @@
+Django
+python-dotenv
+supabase
+python-docx
+PyPDF2
+spacy
+scikit-learn
+pandas
+numpy
+python-magic
+django-crispy-forms
+crispy-bootstrap5 
